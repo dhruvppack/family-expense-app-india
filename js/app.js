@@ -8,7 +8,8 @@ import * as store from './store.js';
 import { toast } from './ui.js';
 import { renderAdd } from './views/add.js';
 import { renderEntries } from './views/entries.js';
-import { renderDashboard, renderSettings } from './views/other.js';
+import { renderSettings } from './views/other.js';
+import { renderDashboard } from './views/dashboard.js';
 
 const app = document.getElementById('app');
 
@@ -44,7 +45,7 @@ function shell() {
     </nav>`;
 }
 
-function route() {
+function route(opts = {}) {
   shell();
   const view = document.getElementById('view');
   const { name, arg } = currentRoute();
@@ -52,7 +53,8 @@ function route() {
   switch (name) {
     case 'entries': return renderEntries(view);
     case 'edit': return renderAdd(view, { editId: arg });
-    case 'dashboard': return renderDashboard(view);
+    // The dashboard always reads fresh data from Excel when it is opened.
+    case 'dashboard': return renderDashboard(view, { reload: !opts.fresh && Date.now() - (state.lastSync || 0) > 5000 });
     case 'settings': return renderSettings(view, { onSignOut: () => auth.signOut(), onChange: route });
     default: return renderAdd(view, {});
   }
@@ -62,7 +64,7 @@ async function refresh(quiet) {
   try {
     await store.loadAll();
     if (!quiet) toast(t('syncedJustNow').split('·').pop().trim());
-    route();
+    route({ fresh: true });
   } catch (e) {
     toast(e.message, 'err');
   }

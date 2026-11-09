@@ -6,13 +6,6 @@ import { esc, digits } from '../format.js';
 import { CONFIG } from '../config.js';
 import { langToggle } from '../ui.js';
 
-export function renderDashboard(el) {
-  el.innerHTML = `<div class="page">
-    <header class="phead"><h1>${esc(t('navDashboard'))}</h1>${langToggle()}</header>
-    <div class="card pad coming">${icon('chart', 32)}<h3>${esc(t('comingTitle'))}</h3><p class="muted">${esc(t('dashComing'))}</p></div>
-  </div>`;
-}
-
 export function syncText() {
   if (!state.lastSync) return '';
   const mins = Math.floor((Date.now() - state.lastSync) / 60000);
