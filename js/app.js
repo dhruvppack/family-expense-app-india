@@ -115,6 +115,11 @@ async function boot() {
         return;
       }
     }
+    if (new URLSearchParams(location.search).has('diag')) {
+      const { runDiag } = await import('./diag.js');
+      app.innerHTML = '<main id="view" style="max-width:720px;margin:0 auto;padding:18px"></main>';
+      return runDiag(document.getElementById('view'));
+    }
     await store.loadAll();
     route();
   } catch (e) {
