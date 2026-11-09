@@ -430,7 +430,7 @@ async function save(how) {
     draw();
     root.querySelector('#amt')?.focus();
   } catch (e) {
-    F.busy = false; F.err = e.message; draw();
+    F.busy = false; F.err = e.message + (e.detail ? ` (${e.detail})` : ''); draw();
     toast(e.message, 'err');
   }
 }

@@ -124,7 +124,7 @@ async function boot() {
       <h2>${esc(t('loadFailed'))}</h2>
       ${who ? `<p>${esc(t('signedInAs', { u: who }))}</p>` : ''}
       <p class="muted">${esc(t(e.noAccess ? 'noAccessHelp' : 'loadFailedHelp'))}</p>
-      <p class="muted small">${esc(e.message)}</p>
+      <p class="muted small">${esc(e.message)}${e.detail ? '<br>' + esc(e.detail) : ''}</p>
       <button class="btn big btn-exp" onclick="location.reload()">${esc(t('tryAgain'))}</button>
       ${state.demo ? '' : `<button class="btn big ghost" id="switch-acc">${esc(t('switchAccount'))}</button>`}
     </div>`);
