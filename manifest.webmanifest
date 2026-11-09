@@ -2,6 +2,7 @@
   "name": "Family Expense App - India",
   "short_name": "Family Expenses",
   "description": "Family expenses, income and refunds in English and Gujarati.",
+  "id": "./",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

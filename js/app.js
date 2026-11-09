@@ -8,7 +8,8 @@ import * as store from './store.js';
 import { toast } from './ui.js';
 import { renderAdd } from './views/add.js';
 import { renderEntries } from './views/entries.js';
-import { renderSettings } from './views/other.js';
+import { renderSettings } from './views/settings.js';
+import { renderInstall } from './views/install.js';
 import { renderDashboard } from './views/dashboard.js';
 
 const app = document.getElementById('app');
@@ -27,7 +28,8 @@ function currentRoute() {
 }
 
 function shell() {
-  const r = currentRoute().name === 'edit' ? 'entries' : currentRoute().name;
+  const rn = currentRoute().name;
+  const r = rn === 'edit' ? 'entries' : rn === 'install' ? 'settings' : rn;
   document.documentElement.lang = state.lang === 'gu' ? 'gu' : 'en';
   document.body.classList.toggle('lang-gu', state.lang === 'gu');
   app.innerHTML = `
@@ -55,6 +57,7 @@ function route(opts = {}) {
     case 'edit': return renderAdd(view, { editId: arg });
     // The dashboard always reads fresh data from Excel when it is opened.
     case 'dashboard': return renderDashboard(view, { reload: !opts.fresh && Date.now() - (state.lastSync || 0) > 5000 });
+    case 'install': return renderInstall(view);
     case 'settings': return renderSettings(view, { onSignOut: () => auth.signOut(), onChange: route });
     default: return renderAdd(view, {});
   }
@@ -137,6 +140,11 @@ async function boot() {
     </div>`);
     document.getElementById('switch-acc')?.addEventListener('click', () => auth.signOut());
   }
+}
+
+// Offline shell + "install to home screen" support.
+if ('serviceWorker' in navigator && location.protocol === 'https:') {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
 }
 
 boot();

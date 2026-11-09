@@ -121,6 +121,17 @@ export async function addLookup(kind, { NameEN, NameGU, catKind }) {
   return code;
 }
 
+/** Changes a category / source / person / payment mode (name, Gujarati name, colour, Active). Codes never change. */
+export async function updateLookup(kind, code, fields) {
+  const item = state[kind].find((x) => x.Code === code);
+  if (!item) throw new Error('Not found: ' + code);
+  if (!state.demo) await graph.updateRowByKey(TABLE_FOR[kind], code, fields);
+  Object.assign(item, fields);
+  state.lastSync = Date.now();
+}
+
+export const PALETTE_CHOICES = PALETTE;
+
 // ---- Helpers used by the screens ----
 export const live = () => state.entries.filter((e) => !e.deleted);
 export const activeCats = (kind) => state.categories.filter((c) => c.Kind === kind && c.Active).sort((a, b) => a.SortOrder - b.SortOrder);

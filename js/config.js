@@ -5,6 +5,7 @@
 // ------------------------------------------------------------------
 export const CONFIG = {
   appName: 'Family Expense App - India',
+  version: '1.0 (Phase 5)',
 
   // Microsoft Entra app registration (PROPACK BV tenant)
   clientId: '91933921-fd38-4be6-9480-4f7c867db9c9',
