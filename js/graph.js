@@ -17,16 +17,17 @@ async function call(method, url, body, attempt = 0) {
     body: body ? JSON.stringify(body) : undefined,
   });
   if (res.ok) return res.status === 204 ? null : res.json();
-  // Retry on expired token once, and on throttling / busy file a few times.
+  let msg = res.status + ' ' + res.statusText, code = '';
+  try { const j = await res.json(); msg = j.error?.message || msg; code = j.error?.code || ''; } catch { /* ignore */ }
+  // Retry on expired token once, and on throttling / busy file / Excel Online warming up a few times.
   if (res.status === 401 && attempt === 0) return call(method, url, body, 1);
-  if ([429, 503, 504, 409].includes(res.status) && attempt < 4) {
-    const wait = Number(res.headers.get('Retry-After')) * 1000 || 800 * (attempt + 1) ** 2;
+  const transient = [409, 429, 500, 502, 503, 504].includes(res.status) || /WAC access token/i.test(msg);
+  if (transient && attempt < 4) {
+    const wait = Number(res.headers.get('Retry-After')) * 1000 || 1000 * (attempt + 1) ** 2;
     await sleep(wait);
     return call(method, url, body, attempt + 1);
   }
-  let msg = res.status + ' ' + res.statusText;
-  try { const j = await res.json(); msg = j.error?.message || msg; } catch { /* ignore */ }
-  const err = new Error(msg); err.status = res.status;
+  const err = new Error(msg); err.status = res.status; err.code = code;
   throw err;
 }
 

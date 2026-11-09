@@ -119,8 +119,16 @@ async function boot() {
     route();
   } catch (e) {
     console.error(e);
-    screen(`<div class="card pad signin"><h2>${esc(t('loadFailed'))}</h2><p class="muted">${esc(e.message)}</p>
-      <button class="btn big btn-exp" onclick="location.reload()">${esc(t('tryAgain'))}</button></div>`);
+    const who = state.account?.username || '';
+    screen(`<div class="card pad signin">
+      <h2>${esc(t('loadFailed'))}</h2>
+      ${who ? `<p>${esc(t('signedInAs', { u: who }))}</p>` : ''}
+      <p class="muted">${esc(t(e.noAccess ? 'noAccessHelp' : 'loadFailedHelp'))}</p>
+      <p class="muted small">${esc(e.message)}</p>
+      <button class="btn big btn-exp" onclick="location.reload()">${esc(t('tryAgain'))}</button>
+      ${state.demo ? '' : `<button class="btn big ghost" id="switch-acc">${esc(t('switchAccount'))}</button>`}
+    </div>`);
+    document.getElementById('switch-acc')?.addEventListener('click', () => auth.signOut());
   }
 }
 

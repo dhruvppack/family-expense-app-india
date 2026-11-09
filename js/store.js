@@ -45,13 +45,25 @@ export async function loadAll() {
     });
     return;
   }
-  const [e, c, p, m] = await Promise.all(['Entries', 'Categories', 'Persons', 'PaymentModes'].map(graph.readTable));
+  // 1) Can this account see the file at all? (clear message if not)
+  if (!state.fileUrl) {
+    try {
+      state.fileUrl = await graph.fileWebUrl();
+    } catch (err) {
+      if ([401, 403, 404].includes(err.status)) {
+        const e2 = new Error(`NOACCESS: ${err.status} ${err.message}`); e2.noAccess = true; throw e2;
+      }
+      throw err;
+    }
+  }
+  // 2) Open the workbook with one request first (Excel Online warms up), then read the rest together.
+  const e = await graph.readTable('Entries');
+  const [c, p, m] = await Promise.all(['Categories', 'Persons', 'PaymentModes'].map(graph.readTable));
   state.entries = e.rows.filter((r) => r.EntryID !== '' && r.EntryID !== null).map(normEntry);
   state.categories = c.rows.filter((r) => r.Code).map(normLookup);
   state.persons = p.rows.filter((r) => r.Code).map(normLookup);
   state.modes = m.rows.filter((r) => r.Code).map(normLookup);
   state.lastSync = Date.now();
-  if (!state.fileUrl) graph.fileWebUrl().then((u) => { state.fileUrl = u; }).catch(() => {});
 }
 
 export function newId() {

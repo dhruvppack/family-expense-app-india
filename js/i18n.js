@@ -136,6 +136,13 @@ const T = {
   loading: ['Loading from Excel…', 'Excel માંથી લોડ થાય છે…'],
   loadFailed: ['Could not open the Excel file', 'Excel ફાઇલ ખૂલી નહીં'],
   tryAgain: ['Try again', 'ફરી પ્રયત્ન કરો'],
+  switchAccount: ['Sign in with a different account', 'બીજા એકાઉન્ટથી સાઇન ઇન કરો'],
+  noAccessHelp: [
+    'This account cannot see the Excel file. Give it Edit access to the Family SharePoint site, or sign in with the family account (sales@ppack.eu).',
+    'આ એકાઉન્ટને Excel ફાઇલ દેખાતી નથી. તેને Family SharePoint સાઇટ પર Edit ઍક્સેસ આપો, અથવા કુટુંબના એકાઉન્ટ (sales@ppack.eu) થી સાઇન ઇન કરો.'],
+  loadFailedHelp: [
+    'Excel Online could not open the file for this account. Check that this account can open the file in Excel on the web, then try again.',
+    'Excel Online આ એકાઉન્ટ માટે ફાઇલ ખોલી શક્યું નહીં. તપાસો કે આ એકાઉન્ટ વેબ પર Excel માં ફાઇલ ખોલી શકે છે, પછી ફરી પ્રયત્ન કરો.'],
   refresh: ['Refresh', 'રિફ્રેશ'],
 
   comingTitle: ['Coming in the next phase', 'આગળના તબક્કામાં આવશે'],
